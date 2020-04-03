@@ -1,16 +1,62 @@
-var life360 = (function (db, loc, logger, map, uc1, uc2, uc3, uc4) {
+var life360 = (function (db, logger, map, metrics, interactions, uc1, uc2, uc3, uc4) {
+    var demo = false;
     var config = {
         "uc1": {
             "country": "India"
         },
         "uc2": {
-            "country": "India"
+            interactions: [
+                {
+                    "name": "Day 1",
+                    "value": "5",
+                    "meets": [
+                    "John Doe",
+                    "Marcus Polo",
+                    "Friend Jonathan",
+                    "Maria Sue",
+                    "Jhia Shie"
+                ]
+                },
+                {
+                    "name": "Day 2",
+                    "value": "16",
+                    "meets": [
+                    "John Doe",
+                    "Marcus Polo",
+                    "Friend Jonathan",
+                    "Maria Sue",
+                    "Jhia Shie"
+                ]
+                },
+                {
+                    "name": "Day 3",
+                    "value": "7",
+                    "meets": [
+                    "John Doe",
+                    "Marcus Polo",
+                    "Friend Jonathan",
+                    "Maria Sue",
+                    "Jhia Shie"
+                ]
+                },
+                {
+                    "name": "Day 4",
+                    "value": "15",
+                    "meets": [
+                    "John Doe",
+                    "Marcus Polo",
+                    "Friend Jonathan",
+                    "Maria Sue",
+                    "Jhia Shie"
+                ]
+                }
+            ]
         },
         "uc3": {
-            "country": "India"
+
         },
         "uc4": {
-            "country": "India"
+
         }
     };
     var timeoutId = -1;
@@ -26,12 +72,12 @@ var life360 = (function (db, loc, logger, map, uc1, uc2, uc3, uc4) {
             "config": config.uc2
         },
         {
-            "name": "USER_INTERACTS_WITH_PEOPLE_EXCHANGES_INFORMATION",
+            "name": "USER_IS_TESTED_POSITIVE",
             "run": uc3.run,
             "config": config.uc3
         },
         {
-            "name": "USER_IS_TESTED_POSITIVE_SEND_SMS_TO_PEOPLE",
+            "name": "SEND_SMS_TO_PEOPLE_DISPLAY_INFORMATION_FOR_USER",
             "run": uc4.run,
             "config": config.uc4
         }
@@ -49,22 +95,37 @@ var life360 = (function (db, loc, logger, map, uc1, uc2, uc3, uc4) {
                 // stop the use cases when done.
                 // todo: add an external trigger for iterating into the usecases
                 if (i == USE_CASES.length - 1) clearTimeout(timeoutId);
-            }, i * 3000);
+            }, i * 5 * 1000); // 5 seconds delay b/w usecases
         }
     };
 
     var startDemo = function () {
-        runUsecases();
+        window.setTimeout(function() {
+            runUsecases();
+        }, 5000);
+    };
+
+    var enableDemoMode = function () {
+        USE_CASES.forEach(uc => uc.config['demo'] = true);
+    };
+
+    var checkAndStartIfDemo = function (config) {
+        if (config.demo === true) {
+            enableDemoMode();
+            startDemo()
+        }
     };
 
     var init = (function (config) {
         map.init(config.map);
+        metrics.init(config.metrics);
+        interactions.init(config.interactions);
+        checkAndStartIfDemo(config);
     });
 
     return {
         init: init,
         start: startDemo,
         db: db,
-        location: loc
     };
-}(datastore, loc, logger, components.map, uc1, uc2, uc3, uc4));
+}(datastore, logger, components.map, components.metrics, components.interactions, uc1, uc2, uc3, uc4));

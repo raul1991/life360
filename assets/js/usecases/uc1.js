@@ -1,11 +1,31 @@
 // daily stats should be fetched from the following json
-var uc1 = (function (logger, requests) {
+var uc1 = (function (logger, requests, metrics) {
     var run = function (config) {
         logger.info("Running uc1...");
-        getCountryStats(config.country, function(lastDay) {
+        getCountryStats(config.country, function (lastDay) {
             logger.info("Total deaths till today: " + lastDay.deaths);
-            // update the gui.
-            components.metrics.add(lastDay);
+            //todo: update the gui.
+            metrics.add([
+                {
+                  "name": "Country",
+                  "value": config.country
+                },
+                {
+                    "date": lastDay.date,
+                    "name": "Deaths",
+                    "value": lastDay.deaths
+                },
+                {
+                    "date": lastDay.date,
+                    "name": "Confirmed",
+                    "value": lastDay.confirmed
+                },
+                {
+                    "date": lastDay.date,
+                    "name": "Recovered",
+                    "value": lastDay.recovered
+                }
+            ]);
         });
     };
 
@@ -20,11 +40,16 @@ var uc1 = (function (logger, requests) {
             onStatsFetched(lastDay);
         }, function (error) {
             logger.error("Response could not be retrieved" + error);
-            onStatsFetched({"deaths": "N/A", "confirmed": "N/A", "recovered": "N/A"});
+            onStatsFetched({
+                "deaths": "N/A",
+                "confirmed": "N/A",
+                "recovered": "N/A",
+                "date": "N/A"
+            });
         });
     };
 
     return {
         "run": run
     }
-}(logger, requests));
+}(logger, requests, components.metrics));

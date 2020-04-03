@@ -34,6 +34,33 @@
             background-color: grey;
         }
 
+        body.danger-animation {
+            background-color: red;
+            position: relative;
+            animation: myfirst 1s linear 1s infinite alternate;
+        }
+
+        @keyframes myfirst {
+            0% {
+                background-color: red;
+            }
+
+            25% {
+                background-color: white;
+            }
+
+            50% {
+                background-color: red;
+            }
+
+            75% {
+                background-color: white;
+            }
+
+            100% {
+                background-color: red;
+            }
+        }
     </style>
 
     <!-- =======================================================
@@ -46,43 +73,70 @@
 
 <body>
     <!-- top navigation bar -->
-    <!--
-    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-        <h5 class="my-0 mr-md-auto font-weight-normal">Life360 - Tracking your daily interactions</h5>
-    </div>
--->
+    <nav class="navbar navbar-light navbar-expand-lg bg-white shadow-lg rounded">
+        <a class="navbar-brand" href="#">
+            <img src="assets/img/logo.svg" class="d-inline-block align-top" alt="">
+        </a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="assets/img/profile-img.jpg" width="50px" height="50px" class="d-inline-block align-top rounded-circle" alt="">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <!-- nav bar ends -->
+    <!-- modal starts -->
+    <!-- Extra large modal -->
+    <div class="modal fade" id="information-modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title" style="color: white" id="staticBackdropLabel">Important information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Your friend, <span class="lead">Maria Austin</span> was tested COVID-19 positive.
+                    <p>Since you met them 10 days ago, chances of you getting the virus is quiet high.</p>
+                    For your own safety
+                    <ul>
+                        <li>Self quarantine immediately at your home and do not come in contact with anybody else.</li>
+                        <li>Contact local health services <a href="tel:+918735127654">+918735127654</a> in case you have a sore throat, respiration problems, nausea or fever that won't go away.</li>
+                        <li>Visit <a href="https://www.cdc.gov/coronavirus/2019-ncov/prevent-getting-sick/prevention.html">this</a> for more information.</li>
+                    </ul>
+                    <div class="lead font-weight-bold">Note:</div> <span>We have provided your details to the government officials.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="$('#information-modal').modal('hide');">Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal ends -->
     <!-- main content -->
     <div class="container-fluid">
-        <div class="row text-center shadow-lg p-3 mb-5 bg-white rounded">
+        <div id="main-content-title-bar" class="row text-center p-3 rounded">
             <div class="col-2">
-                <h5>Daily Statistics</h5>
+                <h5>Country Statistics</h5>
             </div>
             <div class="col-8">
-                <h5>Daily community tracking</h5>
+                <h5>Visited locations</h5>
             </div>
             <div class="col-2">
-                <h5>Interactivity</h5>
+                <h5>Daily tracking</h5>
             </div>
         </div>
         <div class="row">
             <!-- side bar -->
             <nav class="col-2">
-                <div class="sidebar-sticky shadow-lg mb-5 bg-white rounded">
-                    <ul class="nav flex-column" id="interactions">
-                        <li class="nav-item">
-                            <!-- interactions link go here -->
-                            <!-- clicking on them should show the corresponding interaction on the map -->
-                            <div class="card" style="width: 18rem;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                    <a href="#" class="card-link">Card link</a>
-                                    <a href="#" class="card-link">Another link</a>
-                                </div>
-                            </div>
-                        </li>
+                <div class="sidebar-sticky shadow-lg bg-white rounded">
+                    <ul class="nav flex-column" id="metrics">
+                        <!-- list of metrics go here -->
+                        <!-- metrics end here -->
                     </ul>
                 </div>
             </nav>
@@ -90,7 +144,7 @@
             <!-- google map -->
             <div class="col-8">
                 <!--The div element for the map -->
-                <div id="map" class="shadow-lg mb-5 bg-white rounded"></div>
+                <div id="map" class="shadow-lg bg-white rounded"></div>
                 <script>
                     // Initialize and add the map
                     function initMap() {
@@ -99,55 +153,36 @@
                             lng: 77.1139954
                         };
                         life360.init({
+                            demo: true,
                             map: {
+                                radius: 1000, // default radius
                                 elementId: "map",
                                 marker: {
                                     position: home,
                                 },
-                                zoom: 19,
+                                zoom: 15,
                                 center: home
+                            },
+                            metrics: {
+                                elementId: "#metrics",
+                                templateId: "#metrics-template"
+                            },
+                            interactions: {
+                                elementId: "#interactions",
+                                templateId: "#interactions-template"
                             }
                         });
                     }
-
                 </script>
                 <!-- google map ends here-->
             </div>
             <!-- google map ends here -->
-            <!-- metrics -->
+            <!-- interactions -->
             <nav class="col-2">
-                <div class="sidebar-sticky shadow-lg p-3 mb-5 bg-white rounded">
+                <div class="sidebar-sticky shadow-lg bg-white rounded">
                     <ul class="nav flex-column" id="interactions">
-                        <li class="nav-item">
-                            <!-- interactions link go here -->
-                            <!-- clicking on them should show the corresponding interaction on the map -->
-                            <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action active">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">List group item heading</h5>
-                                        <small>3 days ago</small>
-                                    </div>
-                                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                                    <small>Donec id elit non mi porta.</small>
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">List group item heading</h5>
-                                        <small class="text-muted">3 days ago</small>
-                                    </div>
-                                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                                    <small class="text-muted">Donec id elit non mi porta.</small>
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">List group item heading</h5>
-                                        <small class="text-muted">3 days ago</small>
-                                    </div>
-                                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                                    <small class="text-muted">Donec id elit non mi porta.</small>
-                                </a>
-                            </div>
-                        </li>
+                        <!-- interactions -->
+                        <!-- interactions end here -->
                     </ul>
                 </div>
             </nav>
@@ -155,7 +190,36 @@
         </div>
     </div>
     <!-- main content ends -->
+    <!-- handlebar templates -->
+    <script id="metrics-template" type="text/x-handlebars-template" src="assets/templates/metrics.html">
+        <li class="nav-item">
+            <!-- interactions link go here -->
+            <!-- clicking on them should show the corresponding interaction on the map -->
+            <div class="card show" style="width: 18rem;">
+                <div class="card-body text-center p-5">
+                    <h5 class="card-title">{{name}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{date}}</h6>
+                    <h1 class="card-text">{{value}}</h1>
+                </div>
+            </div>
+        </li>
+    </script>
+    <script id="interactions-template" type="text/x-handlebars-template" src="assets/templates/interactions.html">
+        <li class="nav-item">
+            <!-- todo: interactions link go here -->
+            <!-- todo: clicking on them should show the corresponding interaction on the map -->
+            <div class="card show" style="width: 18rem;">
+                <div class="card-body text-center p-5">
+                    <h5 class="card-title">{{name}}</h5>
+                    <h1 class="card-text">{{value}}</h1>
+                    <button type="button" class="btn btn-outline-primary" onclick="components.map.plotPoints({{value}})">Show locations</button>
+                </div>
+            </div>
+        </li>
+    </script>
+    <!-- templates end -->
     <!-- Vendor JS Files -->
+    <script src="assets/vendor/handlebars.min-v4.7.4.js"></script>
     <script src="assets/vendor/jquery/jquery.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendor/jquery.easing/jquery.easing.min.js"></script>
@@ -172,11 +236,11 @@
     <script src="assets/js/main.js"></script>
     <!-- common files -->
     <script src="assets/js/logger.js"></script>
+    <script src="assets/js/mocklocation.js"></script>
     <script src="assets/js/requests.js"></script>
     <script src="assets/js/datastore.js"></script>
     <script src="assets/js/components.js"></script>
     <!-- common files end -->
-    <script src="assets/js/mocklocation.js"></script>
     <!-- usecases -->
     <script src="assets/js/usecases/uc1.js"></script>
     <script src="assets/js/usecases/uc2.js"></script>
@@ -186,6 +250,4 @@
     <script src="assets/js/life360.js"></script>
     <!-- load google map -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-WpXfIuwvVnBIDFAMo2mdcB7OfoPdL28&callback=initMap"></script>
-</body>
-
-</html>
+</body></html>

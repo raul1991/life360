@@ -6,7 +6,7 @@ var loc = (function (logger) {
      * @param {number} count Number of points to generate.
      * @return {array} Array of Objects with lat and lng attributes.
      */
-    function generateRandomPoints(center, radius, count) {
+    var generateRandomPoints = function (center, radius, count) {
         var points = [];
         var i;
         for (var i = 0; i < count; i++) {
@@ -23,7 +23,7 @@ var loc = (function (logger) {
      * @param  {number} radius Radius in meters.
      * @return {Object} The generated random points as JS object with lat and lng attributes.
      */
-    function generateRandomPoint(center, radius) {
+    var generateRandomPoint = function (center, radius) {
         var x0 = center.lng;
         var y0 = center.lat;
         // Convert Radius from meters to degrees.
@@ -44,7 +44,8 @@ var loc = (function (logger) {
             'lat': y + y0,
             'lng': xp + x0
         };
-    }
+    };
+
     return {
         get: generateRandomPoints
     };
